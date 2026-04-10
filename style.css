@@ -422,186 +422,203 @@ footer {
     text-align: center;
 }
 
-/* Story Tunnel Section */
-.tunnel-section {
+/* Scroll Video Section */
+.scroll-video-section {
     position: relative;
-    height: 1000vh;
-    background-color: #050505;
+    height: 400vh; /* Adjust this to make the animation scroll faster or slower (more height = slower scroll) */
+    background-color: #ffffff; /* White blank space */
 }
 
-.tunnel-sticky-container {
+.canvas-container {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 5;
+    clip-path: circle(0% at 50% 50%);
+    will-change: clip-path;
+}
+
+#video-canvas {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
+}
+
+.ventures-active-heading {
+    position: sticky;
+    top: 15vh;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 100; /* High z-index to stay on top of everything */
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    mix-blend-mode: difference; /* Dynamic color based on background */
+}
+
+.v-heading-text {
+    font-size: 4.8rem;
+    font-weight: 800;
+    color: var(--accent-color); /* Soft Gold (#d4af37) */
+    letter-spacing: -2px;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Premium shade */
+    transition: transform 0.4s ease;
+}
+
+.ventures-active-heading.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Ventures Scroll Locked Section */
+.ventures-scroll-section {
+    position: relative;
+    height: 400vh; /* Scroll duration length */
+    background-color: var(--bg-light); /* Or match previous section */
+}
+
+.ventures-sticky-container {
     position: sticky;
     top: 0;
     height: 100vh;
     width: 100%;
     overflow: hidden;
+    background-color: #ffffff; /* Base white so outer-bg fades to pure white */
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #050505;
 }
 
-.tunnel-layer {
+.ventures-outer-bg {
     position: absolute;
     inset: 0;
+    background-color: #ececec; /* Soft grey */
+    opacity: 1;
+    z-index: 1;
+    will-change: opacity;
+}
+
+.ventures-circle-mask {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    background-color: #ffffff; /* Pure white center */
+    clip-path: circle(5% at 50% 50%); /* Start small */
+    will-change: clip-path;
     display: flex;
     align-items: center;
     justify-content: center;
-    will-change: transform, opacity, filter;
-    opacity: 0;
-    transform: scale(0.1);
 }
 
-.tunnel-layer-content {
-    position: relative;
-    width: 80vw;
-    height: 80vh;
-    border-radius: 2rem;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-@media (min-width: 768px) {
-    .tunnel-layer-content {
-        width: 60vw;
-        height: 60vh;
-    }
-}
-
-.tunnel-img {
+.ventures-inner-content {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(0.2);
-    transition: filter 0.7s ease;
-}
-
-.tunnel-layer-content:hover .tunnel-img {
-    filter: grayscale(0);
-}
-
-.tunnel-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-}
-
-.tunnel-text-wrapper {
-    position: absolute;
-    inset: 0;
+    max-width: 1200px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 3rem;
-    text-align: center;
-    will-change: transform, opacity;
-}
-
-.tunnel-chapter {
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-}
-
-.color-emerald { color: #34d399; }
-.color-blue { color: #60a5fa; }
-.color-orange { color: #fb923c; }
-.color-cyan { color: #22d3ee; }
-.color-purple { color: #c084fc; }
-.color-pink { color: #f472b6; }
-.color-white { color: #ffffff; }
-
-.tunnel-heading {
-    color: white;
-    font-size: 3rem;
-    font-weight: 900;
-    margin-bottom: 1rem;
-    letter-spacing: -0.05em;
-    text-transform: uppercase;
-    font-style: italic;
-    line-height: 1;
-}
-
-@media (min-width: 768px) {
-    .tunnel-heading {
-        font-size: 4.5rem;
-    }
-}
-
-.tunnel-desc {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 1.125rem;
-    max-width: 24rem;
-    font-weight: 300;
-    line-height: 1.6;
-}
-
-.tunnel-vignette {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 60;
-    background: radial-gradient(circle at center, transparent 0%, black 100%);
-    opacity: 0.8;
-}
-
-.tunnel-final-cta {
-    position: absolute;
-    z-index: 100;
-    text-align: center;
-    opacity: 0;
-    transform: scale(0.8);
-    will-change: transform, opacity;
-    pointer-events: none;
-}
-
-.tunnel-final-cta h2 {
-    color: white;
-    font-size: 4.5rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-}
-
-.tunnel-final-cta button {
-    padding: 1.25rem 2.5rem;
-    background: white;
-    color: black;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border-radius: 9999px;
-    border: none;
-    cursor: pointer;
-}
-
-/* Progress Side Dots */
-.tunnel-progress {
-    position: absolute;
-    left: 2.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.progress-dot {
-    height: 4px;
-    width: 2rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 9999px;
-    overflow: hidden;
-}
-
-.progress-dot-fill {
     height: 100%;
-    background: white;
-    transform-origin: left;
-    transform: scaleX(0);
+}
+
+.ventures-header {
+    margin-bottom: 4rem;
+    text-align: center;
+}
+
+.ventures-title-reveal {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: opacity, transform;
+}
+
+.ventures-grid-locked {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+.v-card {
+    background: #fafafa;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(40px);
+    will-change: opacity, transform;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+/* Hover effects */
+.v-card:hover {
+    transform: scale(1.03) translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+}
+
+.v-card-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(58,134,255,0.04) 0%, rgba(205,180,255,0.02) 40%, transparent 60%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease-out; /* Reduced transition time for smoother JS follow */
+    pointer-events: none;
+}
+
+.v-card-icon {
+    width: 60px;
+    height: 60px;
+    background: #ffffff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: #1a1a1a;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    transition: color 0.4s ease;
+}
+
+.v-card:hover .v-card-icon {
+    color: #e6c97a; /* Soft gold tint */
+}
+
+.v-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #1a1a1a;
+}
+
+.v-card-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #666666;
+    font-weight: 400;
 }
 
 .footer-content {
@@ -653,4 +670,48 @@ footer {
     .ventures-card {
         padding: 2rem 1.5rem;
     }
+}
+
+/* =============================================
+   Arc Scroll Cards
+   ============================================= */
+#arc-cards-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 6;
+}
+
+.arc-card {
+    position: absolute;
+    width: 200px;
+    height: 140px;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #ccc;
+    overflow: hidden;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    will-change: opacity, left, top;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+}
+
+.arc-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transform: scale(1.55); /* More zoomed in */
+}
+
+#arc-card-13 .arc-card-img {
+    transform: scale(1.25); /* Slightly increased zoom for file59.png */
 }

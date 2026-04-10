@@ -13,124 +13,154 @@ document.addEventListener('DOMContentLoaded', () => {
             navbar.style.boxShadow = 'none';
         }
     });
+    // Frame by Frame Canvas Scroll Logic
+    const videoCanvas = document.getElementById('video-canvas');
+    if (videoCanvas) {
+        const context = videoCanvas.getContext('2d');
+        
+        // ----------------------------------------------------
+        // Configuration mapped to your 'frame-by-frame' directory
+        // ----------------------------------------------------
+        const frameCount = 240;
+        const currentFrame = index => (
+            `frame-by-frame/ezgif-frame-${index.toString().padStart(3, '0')}.png`
+        );
 
-    // Story Tunnel Logic (Recreating Framer Motion functionality in Vanilla JS)
-    const tunnelSection = document.getElementById('story-tunnel');
-    if (tunnelSection) {
-        const total = 7;
-        const layers = [];
-        for (let i = 0; i < total; i++) {
-            layers.push({
-                layerEl: document.getElementById(`tunnel-layer-${i}`),
-                textEl: document.getElementById(`tt-${i}`),
-                dotEl: document.getElementById(`pd-${i}`)
-            });
+        // Preload images for smooth animation without flicker
+        const images = [];
+        let loadedFrames = 0;
+        
+        for (let i = 1; i <= frameCount; i++) {
+            const img = new Image();
+            img.src = currentFrame(i);
+            img.onload = () => {
+                loadedFrames++;
+                // Draw first frame immediately when it's loaded as the placeholder
+                if (i === 1) {
+                    videoCanvas.width = img.width || 1920;
+                    videoCanvas.height = img.height || 1080;
+                    context.drawImage(img, 0, 0);
+                }
+            };
+            images.push(img);
         }
-        const ctaEl = document.getElementById('tunnel-cta');
 
-        function mapRange(value, inMin, inMax, outMin, outMax) {
+        const scrollVideoSection = document.getElementById('scroll-video-section');
+
+        function mapRangeVideo(value, inMin, inMax, outMin, outMax) {
             if (value <= inMin) return outMin;
             if (value >= inMax) return outMax;
             return outMin + (outMax - outMin) * ((value - inMin) / (inMax - inMin));
         }
 
-        function mapMulti(value, inputRanges, outputRanges) {
-            for (let i = 0; i < inputRanges.length - 1; i++) {
-                if (value >= inputRanges[i] && value <= inputRanges[i+1]) {
-                    return mapRange(value, inputRanges[i], inputRanges[i+1], outputRanges[i], outputRanges[i+1]);
-                }
-            }
-            if (value < inputRanges[0]) return outputRanges[0];
-            if (value > inputRanges[inputRanges.length - 1]) return outputRanges[outputRanges.length - 1];
-            return outputRanges[0];
+        // ── Arc Cards Setup ──────────────────────────────────────
+        const TOTAL_ARC_CARDS = 15;
+        const arcCards = [];
+        for (let i = 0; i < TOTAL_ARC_CARDS; i++) {
+            arcCards.push(document.getElementById(`arc-card-${i}`));
         }
 
-        let tickingTunnel = false;
-        let currentProgress = 0;
-        let targetProgress = 0;
-        
-        function updateTunnel() {
-            // Smooth easing (spring-like damping)
-            currentProgress += (targetProgress - currentProgress) * 0.06;
-            
-            // Apply to progress dots
-            for (let i = 0; i < total; i++) {
-                const scaleX = mapRange(currentProgress, i / total, (i + 1) / total, 0, 1);
-                if (layers[i].dotEl) {
-                    layers[i].dotEl.style.transform = `scaleX(${scaleX})`;
-                }
-            }
+        // Stagger between cards in radians (~16°) — creates visible gaps
+        const ARC_STAGGER   = 0.28;
+        const EXTRA_BEFORE  = 0.5;   // radians off-screen right at start
+        const EXTRA_AFTER   = (TOTAL_ARC_CARDS - 1) * ARC_STAGGER + 0.5; // off-screen left at end
+        const ARC_TOTAL_RANGE = Math.PI + EXTRA_BEFORE + EXTRA_AFTER;
 
-            // Apply to layers
-            for (let i = 0; i < total; i++) {
-                const start = i / total;
-                const end = (i + 2) / total;
-                const exit = (i + 1) / total;
+        function positionArcCards(scrollFraction) {
+            const W  = window.innerWidth;
+            const H  = window.innerHeight;
+            // Ellipse centred at bottom-centre: arc goes right-edge → centre → left-edge
+            const CX = W / 2;
+            const CY = H;
+            const RX = W / 2 + 160;  // slightly beyond right/left edges
+            const RY = H / 2 + 60;   // high enough to pass through screen centre
 
-                const scale = mapMulti(currentProgress, [start, exit, end], [0.1, 1, 25]);
-                const opacity = mapMulti(currentProgress, [start, start + 0.05, exit, exit + 0.05], [0, 1, 1, 0]);
-                const blur = mapRange(currentProgress, exit, end, 0, 40);
+            // theta for the leading card (card 0) sweeps the full arc range
+            const theta0 = scrollFraction * ARC_TOTAL_RANGE - EXTRA_BEFORE;
 
-                const textOpacity = mapMulti(currentProgress, [start + 0.02, start + 0.05, exit - 0.05, exit], [0, 1, 1, 0]);
-                const textY = mapRange(currentProgress, start, exit, 20, -20);
-                
-                if (layers[i].layerEl && layers[i].textEl) {
-                    layers[i].layerEl.style.zIndex = i + 1;
-                    layers[i].layerEl.style.transform = `scale(${scale})`;
-                    layers[i].layerEl.style.opacity = opacity;
-                    layers[i].layerEl.style.filter = `blur(${blur}px)`;
+            // Section is active only while scroll-video-section is pinned
+            const sectionActive = scrollFraction > 0 && scrollFraction < 1;
 
-                    layers[i].textEl.style.opacity = textOpacity;
-                    layers[i].textEl.style.transform = `translateY(${textY}px)`;
-                }
-            }
+            arcCards.forEach((card, i) => {
+                if (!card) return;
 
-            // CTA logic
-            if (ctaEl) {
-                const ctaOpacity = mapRange(currentProgress, 0.95, 1, 0, 1);
-                const ctaScale = mapRange(currentProgress, 0.95, 1, 0.8, 1);
-                ctaEl.style.opacity = ctaOpacity;
-                ctaEl.style.transform = `scale(${ctaScale})`;
-                ctaEl.style.pointerEvents = ctaOpacity > 0.5 ? 'auto' : 'none';
-            }
+                const theta = theta0 - i * ARC_STAGGER;
 
-            if (Math.abs(targetProgress - currentProgress) > 0.001) {
-                requestAnimationFrame(updateTunnel);
-            } else {
-                tickingTunnel = false;
-            }
+                // x/y on the ellipse
+                const x = CX + RX * Math.cos(theta);
+                const y = CY - RY * Math.sin(theta);
+
+                card.style.left = x + 'px';
+                card.style.top  = y + 'px';
+
+                // Fade in/out smoothly near screen edges (theta 0 → π visible range)
+                const edgeFade = 0.25; // radians
+                const fadeIn  = Math.min(1, Math.max(0, (theta)             / edgeFade));
+                const fadeOut = Math.min(1, Math.max(0, (Math.PI - theta)   / edgeFade));
+                const alpha   = sectionActive ? Math.min(fadeIn, fadeOut) : 0;
+
+                card.style.opacity = alpha;
+            });
         }
 
+        let lastFrameIndex = 0;
         window.addEventListener('scroll', () => {
-            const rect = tunnelSection.getBoundingClientRect();
-            const maxScroll = rect.height - window.innerHeight;
+            if (!scrollVideoSection || loadedFrames === 0) return;
+
+            const rect = scrollVideoSection.getBoundingClientRect();
+            const maxScroll = scrollVideoSection.scrollHeight - window.innerHeight;
             
-            let p = 0;
-            if (rect.top > 0) {
-                p = 0;
+            let scrollFraction = 0;
+            // Negative top means it has hit the top of viewport and started scrolling past
+            if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+                // Determine completion ratio
+                scrollFraction = -rect.top / maxScroll; 
             } else if (rect.bottom < window.innerHeight) {
-                p = 1;
-            } else {
-                p = -rect.top / maxScroll;
+                // Section is completely scrolled past
+                scrollFraction = 1;
+            } else if (rect.top > 0) {
+                // Section hasn't reached the top of viewport yet
+                scrollFraction = 0;
             }
             
-            targetProgress = Math.max(0, Math.min(1, p));
+            const frameIndex = Math.min(
+                frameCount - 1,
+                Math.floor(scrollFraction * frameCount)
+            );
             
-            if (!tickingTunnel) {
-                tickingTunnel = true;
-                requestAnimationFrame(updateTunnel);
+            // Only draw if frame changes to save resources
+            if (frameIndex !== lastFrameIndex && images[frameIndex] && images[frameIndex].complete) {
+                // Set initial canvas dimension bounds based on original footage aspect
+                if (videoCanvas.width === 300) {
+                    videoCanvas.width = images[frameIndex].width || 1920;
+                    videoCanvas.height = images[frameIndex].height || 1080;
+                }
+                context.drawImage(images[frameIndex], 0, 0, videoCanvas.width, videoCanvas.height);
+                lastFrameIndex = frameIndex;
             }
+
+            // Circular Mask Reveal Logic for Earth Animation
+            const canvasContainer = document.querySelector('.canvas-container');
+            const venturesHeading = document.querySelector('.ventures-active-heading');
+            
+            if (canvasContainer) {
+                // Starts as a 0% circle at progress=0, expands to ~150% (full screen) by progress=0.3
+                const maskRadius = mapRangeVideo(scrollFraction, 0, 0.3, 0, 150);
+                canvasContainer.style.clipPath = `circle(${maskRadius}% at 50% 50%)`;
+            }
+
+            // Show/Hide "Our Ventures" heading based on scroll
+            if (venturesHeading) {
+                if (scrollFraction > 0.05 && scrollFraction < 0.95) {
+                    venturesHeading.classList.add('visible');
+                } else {
+                    venturesHeading.classList.remove('visible');
+                }
+            }
+
+            // ── Animate arc cards along the circular path ──
+            positionArcCards(scrollFraction);
         });
-        
-        // Initial set based on scroll position
-        setTimeout(() => {
-            const initRect = tunnelSection.getBoundingClientRect();
-            if(initRect.top <= 0) {
-               let p = -initRect.top / (initRect.height - window.innerHeight);
-               targetProgress = Math.max(0, Math.min(1, p));
-               currentProgress = targetProgress;
-            }
-            updateTunnel();
-        }, 100);
     }
+
 });
