@@ -15,7 +15,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    scroll-behavior: smooth;
 }
 
 body {
@@ -274,60 +273,7 @@ section {
     padding: 8rem 0;
 }
 
-/* Clients Section */
-.clients-section {
-    background-color: var(--bg-light);
-    position: relative;
-    z-index: 10;
-}
 
-/* Scroll Transition Effect (Parallax slide up) */
-.scroll-reveal {
-    opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-.scroll-reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.clients-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
-    align-items: center;
-}
-
-.client-logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #b0b0b0;
-    padding: 2.5rem 3rem;
-    border: 1px solid rgba(0,0,0,0.05);
-    border-radius: 12px;
-    background: #ffffff;
-    transition: var(--transition);
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-    cursor: default;
-    min-width: 200px;
-    text-align: center;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.02);
-}
-
-.client-logo.visible {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-.client-logo:hover {
-    color: var(--primary-color);
-    border-color: var(--light-green);
-    box-shadow: 0 15px 30px rgba(11,59,36,0.1);
-    transform: translateY(-5px);
-}
 
 /* Ventures Section */
 .ventures-section {
@@ -422,204 +368,7 @@ footer {
     text-align: center;
 }
 
-/* Scroll Video Section */
-.scroll-video-section {
-    position: relative;
-    height: 400vh; /* Adjust this to make the animation scroll faster or slower (more height = slower scroll) */
-    background-color: #ffffff; /* White blank space */
-}
 
-.canvas-container {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    z-index: 5;
-    clip-path: circle(0% at 50% 50%);
-    will-change: clip-path;
-}
-
-#video-canvas {
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    display: block;
-}
-
-.ventures-active-heading {
-    position: sticky;
-    top: 15vh;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    z-index: 100; /* High z-index to stay on top of everything */
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-    mix-blend-mode: difference; /* Dynamic color based on background */
-}
-
-.v-heading-text {
-    font-size: 4.8rem;
-    font-weight: 800;
-    color: var(--accent-color); /* Soft Gold (#d4af37) */
-    letter-spacing: -2px;
-    text-transform: uppercase;
-    margin: 0;
-    line-height: 1;
-    font-family: 'Outfit', sans-serif;
-    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Premium shade */
-    transition: transform 0.4s ease;
-}
-
-.ventures-active-heading.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Ventures Scroll Locked Section */
-.ventures-scroll-section {
-    position: relative;
-    height: 400vh; /* Scroll duration length */
-    background-color: var(--bg-light); /* Or match previous section */
-}
-
-.ventures-sticky-container {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    background-color: #ffffff; /* Base white so outer-bg fades to pure white */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.ventures-outer-bg {
-    position: absolute;
-    inset: 0;
-    background-color: #ececec; /* Soft grey */
-    opacity: 1;
-    z-index: 1;
-    will-change: opacity;
-}
-
-.ventures-circle-mask {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    z-index: 2;
-    background-color: #ffffff; /* Pure white center */
-    clip-path: circle(5% at 50% 50%); /* Start small */
-    will-change: clip-path;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.ventures-inner-content {
-    width: 100%;
-    max-width: 1200px;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-}
-
-.ventures-header {
-    margin-bottom: 4rem;
-    text-align: center;
-}
-
-.ventures-title-reveal {
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: #1a1a1a;
-    opacity: 0;
-    transform: translateY(20px);
-    will-change: opacity, transform;
-}
-
-.ventures-grid-locked {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    width: 100%;
-}
-
-.v-card {
-    background: #fafafa;
-    border-radius: 16px;
-    padding: 2.5rem 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    border: 1px solid rgba(0, 0, 0, 0.02);
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(40px);
-    will-change: opacity, transform;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: default;
-}
-
-/* Hover effects */
-.v-card:hover {
-    transform: scale(1.03) translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
-}
-
-.v-card-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(58,134,255,0.04) 0%, rgba(205,180,255,0.02) 40%, transparent 60%);
-    transform: translate(-50%, -50%) scale(0);
-    transition: transform 0.2s ease-out; /* Reduced transition time for smoother JS follow */
-    pointer-events: none;
-}
-
-.v-card-icon {
-    width: 60px;
-    height: 60px;
-    background: #ffffff;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    color: #1a1a1a;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    transition: color 0.4s ease;
-}
-
-.v-card:hover .v-card-icon {
-    color: #e6c97a; /* Soft gold tint */
-}
-
-.v-card-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: #1a1a1a;
-}
-
-.v-card-desc {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: #666666;
-    font-weight: 400;
-}
 
 .footer-content {
     display: flex;
@@ -672,46 +421,72 @@ footer {
     }
 }
 
-/* =============================================
-   Arc Scroll Cards
-   ============================================= */
-#arc-cards-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 6;
-}
-
-.arc-card {
-    position: absolute;
-    width: 200px;
-    height: 140px;
-    background: #ffffff;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border: 1px solid #ccc;
-    overflow: hidden;
-    opacity: 0;
-    transform: translate(-50%, -50%);
-    will-change: opacity, left, top;
-    pointer-events: none;
+/* About Us Section */
+.about-us-section {
+    position: relative;
+    width: 100%;
+    min-height: 350vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('about_bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
+    flex-direction: column;
+    padding: 0;
 }
 
-.arc-card-img {
+.about-us-container {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    display: block;
-    transform: scale(1.55); /* More zoomed in */
+    min-height: 350vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 6rem 10%;
 }
 
-#arc-card-13 .arc-card-img {
-    transform: scale(1.25); /* Slightly increased zoom for file59.png */
+.about-us-title-box {
+    align-self: flex-start;
+    background-color: #ffffff;
+    padding: 1.2rem 2.5rem;
+    margin-top: 2rem;
+}
+
+.about-us-title-box h2 {
+    color: #000000;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.5px;
+}
+
+.about-us-text-box {
+    margin-top: 30vh;
+    align-self: flex-start;
+}
+
+.about-us-text-box p {
+    color: #ffffff;
+    font-size: 2.3rem;
+    font-weight: 500;
+    line-height: 1.4;
+    max-width: 1100px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .about-us-container {
+        padding: 4rem 5%;
+    }
+    
+    .about-us-title-box h2 {
+        font-size: 1.8rem;
+    }
+    
+    .about-us-text-box p {
+        font-size: 1.5rem;
+    }
 }
